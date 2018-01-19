@@ -1,10 +1,10 @@
 <template>
   <main>
     <div class="left-half">
-      <img v-if="cats.length > 0" :src="cats[leftCatIndex].url" :alt="cats[leftCatIndex].url"/>
+      <img v-if="cats.length" :src="cats[leftCatIndex].url" :alt="cats[leftCatIndex].id"/>
     </div>
     <div class="right-half">
-      <img v-if="cats.length > 0" :src="cats[rightCatIndex].url" :alt="cats[rightCatIndex].url"/>
+      <img v-if="cats.length" :src="cats[rightCatIndex].url" :alt="cats[rightCatIndex].id"/>
     </div>
     <div class="topcats">
       <a href="/topcats">Top Cats</a>
@@ -53,7 +53,7 @@ main {
 }
 
 .left-half img, .right-half img {
-  width: 40%;
+  width: 400px;
 }
 
 .left-half {
