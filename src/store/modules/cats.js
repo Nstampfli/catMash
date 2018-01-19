@@ -11,24 +11,31 @@ const state = {
   all: []
 }
 
-const mutations = {
+export const mutations = {
   FETCH_CATS_REQUEST (state) {
     state.isFetching = true
   },
   FETCH_CATS_FAILURE (state, error) {
+    state.isFetching = false
     state.error = error
   },
-  FETCH_CATS_SUCCESS (state, { images }) {
-    state.all = images
+  FETCH_CATS_SUCCESS (state, cats) {
+    state.isFetching = false
+    state.all = cats
   }
 }
 
-const actions = {
-  async fetchCatsRequest () {
-    const { LATELIER_API_BASE_URL, LATELIER_API_CATS_ENDPOINT } = process.env
-    const response = await fetch(`${LATELIER_API_BASE_URL}/${LATELIER_API_CATS_ENDPOINT}`)
-    const json = await handleResponse(response)
-    console.log(json)
+export const actions = {
+  async fetchCats ({ commit }) {
+    commit(FETCH_CATS_REQUEST)
+    const { LATELIER_API_CATS_ENDPOINT } = process.env
+    try {
+      const response = await fetch(LATELIER_API_CATS_ENDPOINT)
+      const json = await handleResponse(response)
+      commit(FETCH_CATS_SUCCESS, json.images)
+    } catch (error) {
+      commit(FETCH_CATS_FAILURE, error)
+    }
   }
 }
 
