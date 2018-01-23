@@ -27,7 +27,7 @@ Then open [http://localhost:3000/](http://localhost:3000/) to check out the app.
 - Vue.js
 - Vuex
 - Webpack
-- (Cats)
+- (cats)
 
 ## Credits
 
