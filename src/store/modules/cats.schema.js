@@ -6,7 +6,8 @@ const catEntity = new schema.Entity(
   {
     processStrategy: (entity) => ({
       ...entity,
-      score: 0
+      voteCount: 0,
+      mashupCount: 0
     })
   }
 )

@@ -3,12 +3,12 @@
     <div class="half left">
       <div v-if="isFetching && !ids.length" class="loader"/>
       <div v-if="error">{{ error.message }}</div>
-      <img v-if="ids.length" :src="getCatById(leftId).url" :alt="getCatById(leftId).url" @click="addVote(leftId)"/>
+      <img v-if="ids.length" :src="getCatById(leftId).url" :alt="getCatById(leftId).url" @click="addVote(leftId, rightId)"/>
     </div>
     <div class="half">
       <div v-if="isFetching && !ids.length" class="loader"/>
       <div v-if="error">{{ error.message }}</div>
-      <img v-if="ids.length" :src="getCatById(rightId).url" :alt="getCatById(rightId).url" @click="addVote(rightId)"/>
+      <img v-if="ids.length" :src="getCatById(rightId).url" :alt="getCatById(rightId).url" @click="addVote(rightId, leftId)"/>
     </div>
     <div class="link-wrapper">
       <router-link to="/topcats" class="link">Top Cats</router-link>
@@ -46,8 +46,11 @@ export default {
   methods: {
     ...mapActions('cats', [ 'fetchCats' ]),
     ...mapMutations('cats', [ ADD_VOTE ]),
-    addVote (id) {
-      this.ADD_VOTE({ id })
+    addVote (winnerId, loserId) {
+      this.ADD_VOTE({
+        winnerId,
+        loserId
+      })
       this.leftFloat = Math.random()
       do {
         this.rightFloat = Math.random()

@@ -43,11 +43,14 @@ describe('cats.js', () => {
     
     it('should handle ADD_VOTE', () => {
       state.byId = {
-        a: { id: 'a', score: 0 },
-        aa: { id: 'aa', score: 0 }
+        a: { id: 'a', voteCount: 0, mashupCount: 0 },
+        aa: { id: 'aa', voteCount: 0, mashupCount: 0 }
       }
-      mutations.ADD_VOTE(state, { id: 'aa' })
-      expect(state.byId['aa'].score).toBe(1)
+      mutations.ADD_VOTE(state, { winnerId: 'a', loserId: 'aa' })
+      expect(state.byId['a'].voteCount).toBe(1)
+      expect(state.byId['a'].mashupCount).toBe(1)
+      expect(state.byId['aa'].voteCount).toBe(0)
+      expect(state.byId['aa'].mashupCount).toBe(1)
     })
   })
 
@@ -101,8 +104,8 @@ describe('cats.js', () => {
               type: FETCH_CATS_SUCCESS,
               ids: [ 'a', 'aa' ],
               byId: {
-                a : { id: 'a', score: 0 },
-                aa : { id: 'aa', score: 0 }
+                a : { id: 'a', voteCount: 0, mashupCount: 0 },
+                aa : { id: 'aa', voteCount: 0, mashupCount: 0 }
               }
             }
           ])

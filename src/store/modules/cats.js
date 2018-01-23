@@ -32,8 +32,10 @@ export const mutations = {
     state.ids = ids
     state.byId = byId
   },
-  [ADD_VOTE] (state, { id }) {
-    state.byId[id].score++
+  [ADD_VOTE] (state, { winnerId, loserId }) {
+    state.byId[winnerId].voteCount++
+    state.byId[winnerId].mashupCount++
+    state.byId[loserId].mashupCount++
   }
 }
 
