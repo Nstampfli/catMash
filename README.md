@@ -1,30 +1,33 @@
 # catmash
 
-> A Facemash-like app built with Vue, Vuex and cats
+> A Facemash-like app built with [https://vuejs.org/](Vue.js), [https://vuex.vuejs.org/en/](Vuex) and cats
 
-## Build Setup
+## Getting Started
 
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run all tests
-npm test
+Install the npm packages first:
+```sh
+yarn
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+To run the tests:
+```sh
+yarn test
+```
+
+To start the dev server:
+```sh
+yarn start
+```
+
+Then open [http://localhost:3000/](http://localhost:3000/) to check out the app.
+
+## Technologies
+
+- Jest
+- Vue.js
+- Vuex
+- Webpack
+- (Cats)
 
 ## Credits
 
