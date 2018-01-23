@@ -13,7 +13,11 @@ describe('cats.js', () => {
       error: null,
       ids: [ 'a' ],
       byId: {
-        a: { id: 'a', score: 0 }
+        a: {
+          id: 'a',
+          voteCount: 0,
+          mashupCount: 0
+        }
       }
     }
 

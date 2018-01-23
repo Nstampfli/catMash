@@ -1,11 +1,19 @@
 <template>
   <main>
-    <div v-if="isFetching" class="loader"/>
-    <div v-else-if="error">{{ error.message }}</div>
-    <ul v-else-if="topIds.length" class="list list-topcats">
-      <li :key="id" v-for="(id, index) in topIds">
-        <img :src="getCatById(id).url" :alt="getCatById(id).url"/>
-        <div class="score">#{{ index + 1 }} ({{ getScore(id) }}%)</div>
+    <div v-if="isFetching"
+      class="loader"
+    />
+    <div v-else-if="error">
+      {{ error.message }}
+    </div>
+    <ul v-else-if="topIds.length"
+      class="list list-topcats"
+    >
+      <li v-for="(id, index) in topIds" :key="id">
+        <catmash-topcat
+          :index="index"
+          :cat="getCatById(id)"
+        />
       </li>
     </ul>
     <div v-else>No votes yet.</div>
@@ -14,26 +22,30 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
+import TopCat from '@/components/TopCat'
 
 export default {
+  name: 'TopCats',
   computed: {
     ...mapState('cats', [
       'isFetching',
       'error',
       'ids'
     ]),
-    ...mapGetters('cats', [ 'getCatById' ]),
+    ...mapGetters('cats', [
+      'getCatById',
+      'getScoreById'
+    ]),
     topIds () {
       const mashupOnlyIds = this.ids.filter(id => this.getCatById(id).mashupCount > 0)
-      return mashupOnlyIds.sort((a, b) => this.getScore(b) - this.getScore(a))
+      return mashupOnlyIds.sort((a, b) => this.getScoreById(b) - this.getScoreById(a))
     }
   },
   methods: {
-    ...mapActions('cats', [ 'fetchCats' ]),
-    getScore (id) {
-      const cat = this.getCatById(id)
-      return Number((cat.voteCount / cat.mashupCount * 100).toFixed(2))
-    }
+    ...mapActions('cats', [ 'fetchCats' ])
+  },
+  components: {
+    'catmash-topcat': TopCat
   },
   created () {
     if (!this.ids.length) {
@@ -64,15 +76,7 @@ export default {
 }
 
 .list-topcats li:nth-child(2n+1) {
-  background-color: #f3f3f3;
-}
-
-.list-topcats li img {
-  width: 300px;
-}
-
-.list-topcats li .score {
-  padding-bottom: 10px;
+  background-color: #f0f0f0;
 }
 
 @media (min-width: 768px) {

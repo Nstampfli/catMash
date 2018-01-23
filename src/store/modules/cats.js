@@ -16,7 +16,12 @@ const state = {
 }
 
 const getters = {
-  getCatById: state => id => state.byId[id]
+  getCatById: state => id => state.byId[id],
+  getScore: state => (voteCount, mashupCount) => Number((voteCount / mashupCount).toFixed(4)),
+  getScoreById: (state, getters) => id => {
+    const cat = getters.getCatById(id)
+    return getters.getScore(cat.voteCount, cat.mashupCount)
+  }
 }
 
 export const mutations = {

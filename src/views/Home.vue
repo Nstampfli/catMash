@@ -1,14 +1,20 @@
 <template>
   <main>
     <div class="half left">
-      <div v-if="isFetching && !ids.length" class="loader"/>
-      <div v-if="error">{{ error.message }}</div>
-      <img v-if="ids.length" :src="getCatById(leftId).url" :alt="getCatById(leftId).url" @click="addVote(leftId, rightId)"/>
+      <catmash-homecat
+        :isFetching="isFetching"
+        :error="error"
+        :cat="getCatById(leftId)"
+        @vote="addVote(leftId, rightId)"
+      />
     </div>
     <div class="half">
-      <div v-if="isFetching && !ids.length" class="loader"/>
-      <div v-if="error">{{ error.message }}</div>
-      <img v-if="ids.length" :src="getCatById(rightId).url" :alt="getCatById(rightId).url" @click="addVote(rightId, leftId)"/>
+      <catmash-homecat
+        :isFetching="isFetching"
+        :error="error"
+        :cat="getCatById(rightId)"
+        @vote="addVote(rightId, leftId)"
+      />
     </div>
     <div class="link-wrapper">
       <router-link to="/topcats" class="link">Top Cats</router-link>
@@ -19,8 +25,10 @@
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import { ADD_VOTE } from '@/store/modules/cats'
+import HomeCat from '@/components/HomeCat'
 
 export default {
+  name: 'Home',
   data () {
     return {
       leftFloat: Math.random(),
@@ -40,6 +48,13 @@ export default {
     },
     rightId () {
       const index = Math.floor(this.rightFloat * this.ids.length)
+      if (this.ids[index] === this.leftId) {
+        const shiftIndex = Math.floor(Math.random() * this.ids.length)
+        return index < shiftIndex
+          ? shiftIndex - index
+          : index - shiftIndex
+      }
+
       return this.ids[index]
     }
   },
@@ -52,15 +67,13 @@ export default {
         loserId
       })
       this.leftFloat = Math.random()
-      do {
-        this.rightFloat = Math.random()
-      } while (this.rightFloat === this.leftFloat)
-    }
-  },
-  created () {
-    while (this.rightFloat === this.leftFloat) {
       this.rightFloat = Math.random()
     }
+  },
+  components: {
+    'catmash-homecat': HomeCat
+  },
+  created () {
     if (!this.ids.length) {
       this.fetchCats()
     }
@@ -84,17 +97,8 @@ main {
   width: 100%;
 }
 
-.half img {
-  width: 300px;
-}
-
-.half img:hover {
-  cursor: pointer;
-  opacity: 0.8;
-}
-
 .left {
-  background-color: #f3f3f3;
+  background-color: #f0f0f0;
 }
 
 .link-wrapper {
