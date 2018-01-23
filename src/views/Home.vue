@@ -70,8 +70,8 @@ export default {
 
 <style scoped>
 main {
-  display: flex;
-  height: 100vh;
+  display: block;
+  margin: 0 auto;
 }
 
 .half {
@@ -80,11 +80,12 @@ main {
   flex-direction: column;
   flex: 1;
   justify-content: center;
-  width: 50%;
+  padding: 10px 0;
+  width: 100%;
 }
 
 .half img {
-  width: 400px;
+  width: 300px;
 }
 
 .half img:hover {
@@ -112,5 +113,16 @@ main {
 
 .link-wrapper .link:hover {
   text-decoration: underline;
+}
+
+@media (min-width: 768px) {
+  main {
+    display: flex;
+    height: 100vh;
+  }
+
+  .half {
+    width: 50%;
+  }
 }
 </style>

@@ -14,9 +14,6 @@ export default {
 
 <style scoped>
 header {
-  position: absolute;
-  left: 0;
-  right: 0;
   margin: auto;
 }
 
@@ -29,5 +26,13 @@ header {
 .logo a {
   color: inherit;
   text-decoration: none;
+}
+
+@media (min-width: 768px) {
+  header {
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
 }
 </style>

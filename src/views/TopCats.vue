@@ -44,10 +44,6 @@ export default {
 </script>
 
 <style scoped>
-main {
-  padding-top: 50px;
-}
-
 .loader {
   margin: 50px auto;
 }
@@ -72,10 +68,16 @@ main {
 }
 
 .list-topcats li img {
-  height: 200px;
+  width: 300px;
 }
 
 .list-topcats li .score {
   padding-bottom: 10px;
+}
+
+@media (min-width: 768px) {
+  main {
+    padding-top: 50px;
+  }
 }
 </style>
