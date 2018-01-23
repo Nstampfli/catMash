@@ -1,6 +1,6 @@
 # catmash
 
-> A Facemash-like app built with [https://vuejs.org/](Vue.js), [https://vuex.vuejs.org/en/](Vuex) and cats
+> A Facemash-like app built with [Vue.js](https://vuejs.org/), [Vuex](https://vuex.vuejs.org/en/) and cats
 
 ## Getting Started
 
