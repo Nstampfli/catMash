@@ -1,46 +1,68 @@
 import 'whatwg-fetch'
+import { normalize } from 'normalizr'
 import { handleResponse } from '@/utils/fetch'
+import catEntity from './cats.schema'
 
 export const FETCH_CATS_REQUEST = 'FETCH_CATS_REQUEST'
 export const FETCH_CATS_FAILURE = 'FETCH_CATS_FAILURE'
 export const FETCH_CATS_SUCCESS = 'FETCH_CATS_SUCCESS'
+export const ADD_VOTE = 'ADD_VOTE'
 
 const state = {
-  isFetching: false,
-  error: {},
-  all: []
+  isFetching: true,
+  error: null,
+  ids: [],
+  byId: {}
+}
+
+const getters = {
+  getCatById: state => id => state.byId[id]
 }
 
 export const mutations = {
-  FETCH_CATS_REQUEST (state) {
+  [FETCH_CATS_REQUEST] (state) {
     state.isFetching = true
   },
-  FETCH_CATS_FAILURE (state, error) {
+  [FETCH_CATS_FAILURE] (state, { error }) {
     state.isFetching = false
     state.error = error
   },
-  FETCH_CATS_SUCCESS (state, cats) {
+  [FETCH_CATS_SUCCESS] (state, { ids, byId }) {
     state.isFetching = false
-    state.all = cats
+    state.ids = ids
+    state.byId = byId
+  },
+  [ADD_VOTE] (state, { id }) {
+    state.byId[id].score++
   }
 }
 
 export const actions = {
-  async fetchCats ({ commit }) {
-    commit(FETCH_CATS_REQUEST)
+  async fetchCats ({ commit, state }) {
+    commit({ type: FETCH_CATS_REQUEST })
     const { LATELIER_API_CATS_ENDPOINT } = process.env
     try {
       const response = await fetch(LATELIER_API_CATS_ENDPOINT)
       const json = await handleResponse(response)
-      commit(FETCH_CATS_SUCCESS, json.images)
+      const normalized = normalize(json.images, [ catEntity ])
+      commit({
+        type: FETCH_CATS_SUCCESS,
+        ids: normalized.result,
+        byId: normalized.entities.cats
+      })
     } catch (error) {
-      commit(FETCH_CATS_FAILURE, error)
+      commit({
+        type: FETCH_CATS_FAILURE,
+        error
+      })
     }
   }
 }
 
 export default {
+  namespaced: true,
   state,
+  getters,
   mutations,
   actions
 }

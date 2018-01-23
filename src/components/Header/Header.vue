@@ -1,6 +1,8 @@
 <template>
   <header>
-    <span class="logo"><a href="/">catmash</a></span>
+    <span class="logo">
+      <router-link to="/">catmash</router-link>
+    </span>
   </header>
 </template>
 
@@ -24,7 +26,7 @@ header {
   text-decoration: none;
 }
 
-a {
+.logo a {
   color: inherit;
   text-decoration: none;
 }

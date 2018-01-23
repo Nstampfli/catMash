@@ -1,23 +1,39 @@
 <template>
   <main>
-    <ul v-if="cats.length" class="topcats-list">
-      <li :key="cat.id" v-for="cat in cats">
-        <img :src="cat.url" :alt="cat.id"/>
+    <div v-if="isFetching" class="loader"/>
+    <div v-else-if="error">{{ error.message }}</div>
+    <ul v-else class="list list-topcats">
+      <li :key="id" v-for="(id, index) in topIds">
+        <img :src="getCatById(id).url" :alt="getCatById(id).url"/>
+        <div>#{{ index + 1 }} ({{ getCatById(id).score }} vote(s))</div>
       </li>
     </ul>
   </main>
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from 'vuex'
+
 export default {
   computed: {
-    cats () {
-      return this.$store.state.cats.all
+    ...mapState('cats', [
+      'isFetching',
+      'error',
+      'ids'
+    ]),
+    ...mapGetters('cats', [ 'getCatById' ]),
+    topIds () {
+      return this.ids.slice().sort((a, b) => {
+        return this.getCatById(b).score - this.getCatById(a).score
+      })
     }
   },
+  methods: {
+    ...mapActions('cats', [ 'fetchCats' ])
+  },
   created () {
-    if (this.cats.length === 0) {
-      this.$store.dispatch('fetchCats')
+    if (!this.ids.length) {
+      this.fetchCats()
     }
   }
 }
@@ -28,13 +44,25 @@ main {
   padding-top: 50px;
 }
 
-.topcats-list {
-  display: flex;
-  flex-direction: column;
-  list-style-type: none;
+.loader {
+  margin: 50px auto;
 }
 
-.topcats-list li img {
+.list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.list-topcats {
+  display: flex;
+  flex-direction: column;
+}
+
+.list-topcats li {
+  padding-bottom: 20px;
+}
+
+.list-topcats li img {
   height: 200px;
 }
 </style>

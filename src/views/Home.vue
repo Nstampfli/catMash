@@ -1,38 +1,66 @@
 <template>
   <main>
-    <div class="left-half">
-      <img v-if="cats.length" :src="cats[leftCatIndex].url" :alt="cats[leftCatIndex].id"/>
+    <div class="half left">
+      <div v-if="isFetching && !ids.length" class="loader"/>
+      <div v-if="error">{{ error.message }}</div>
+      <img v-if="ids.length" :src="getCatById(leftId).url" :alt="getCatById(leftId).url" @click="addVote(leftId)"/>
     </div>
-    <div class="right-half">
-      <img v-if="cats.length" :src="cats[rightCatIndex].url" :alt="cats[rightCatIndex].id"/>
+    <div class="half">
+      <div v-if="isFetching && !ids.length" class="loader"/>
+      <div v-if="error">{{ error.message }}</div>
+      <img v-if="ids.length" :src="getCatById(rightId).url" :alt="getCatById(rightId).url" @click="addVote(rightId)"/>
     </div>
-    <div class="topcats">
-      <a href="/topcats">Top Cats</a>
+    <div class="link-wrapper">
+      <router-link to="/topcats" class="link">Top Cats</router-link>
     </div>
   </main>
 </template>
 
 <script>
-import { getRandomInt } from '@/utils/random'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import { ADD_VOTE } from '@/store/modules/cats'
 
 export default {
+  data () {
+    return {
+      leftFloat: Math.random(),
+      rightFloat: Math.random()
+    }
+  },
   computed: {
-    cats () {
-      return this.$store.state.cats.all
+    ...mapState('cats', [
+      'isFetching',
+      'error',
+      'ids'
+    ]),
+    ...mapGetters('cats', [ 'getCatById' ]),
+    leftId () {
+      const index = Math.floor(this.leftFloat * this.ids.length)
+      return this.ids[index]
     },
-    leftCatIndex () {
-      return getRandomInt(this.cats.length)
-    },
-    rightCatIndex () {
-      let index = getRandomInt(this.cats.length)
-      while (index === this.leftCatIndex) {
-        index = getRandomInt(this.cats.length)
-      }
-      return index
+    rightId () {
+      const index = Math.floor(this.rightFloat * this.ids.length)
+      return this.ids[index]
+    }
+  },
+  methods: {
+    ...mapActions('cats', [ 'fetchCats' ]),
+    ...mapMutations('cats', [ ADD_VOTE ]),
+    addVote (id) {
+      this.ADD_VOTE({ id })
+      this.leftFloat = Math.random()
+      do {
+        this.rightFloat = Math.random()
+      } while (this.rightFloat === this.leftFloat)
     }
   },
   created () {
-    this.$store.dispatch('fetchCats')
+    while (this.rightFloat === this.leftFloat) {
+      this.rightFloat = Math.random()
+    }
+    if (!this.ids.length) {
+      this.fetchCats()
+    }
   }
 }
 </script>
@@ -43,7 +71,7 @@ main {
   height: 100vh;
 }
 
-.left-half, .right-half {
+.half {
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -52,15 +80,20 @@ main {
   width: 50%;
 }
 
-.left-half img, .right-half img {
+.half img {
   width: 400px;
 }
 
-.left-half {
-  background-color: #ededed;
+.half img:hover {
+  cursor: pointer;
+  opacity: 0.8;
 }
 
-.topcats {
+.left {
+  background-color: #f3f3f3;
+}
+
+.link-wrapper {
   bottom: 10px;
   left: 0;
   right: 0;
@@ -68,13 +101,13 @@ main {
   position: absolute;
 }
 
-.topcats a {
+.link-wrapper .link {
   color: inherit;
-  font-weight: bold;
   text-decoration: none;
+  font-weight: bold;
 }
 
-.topcats a:hover {
+.link-wrapper .link:hover {
   text-decoration: underline;
 }
 </style>

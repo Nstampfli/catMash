@@ -10,8 +10,11 @@ describe('cats.js', () => {
   describe('mutations', () => {
     const state = {
       isFetching: false,
-      error: {},
-      all: []
+      error: null,
+      ids: [ 'a' ],
+      byId: {
+        a: { id: 'a', score: 0 }
+      }
     }
 
     it('should handle FETCH_CATS_REQUEST', () => {
@@ -21,14 +24,30 @@ describe('cats.js', () => {
 
     it('should handle FETCH_CATS_FAILURE', () => {
       const error = new Error('dummy error')
-      mutations.FETCH_CATS_FAILURE(state, error)
+      state.isFetching = true
+      mutations.FETCH_CATS_FAILURE(state, { error })
+      expect(state.isFetching).toBe(false)
       expect(state.error).toBeTruthy()
     })
 
     it('should handle FETCH_CATS_SUCCESS', () => {
-      const cats = [ {}, {} ]
-      mutations.FETCH_CATS_SUCCESS(state, cats)
-      expect(state.all.length).toBeGreaterThan(0)
+      const ids = [ 'a', 'aa' ]
+      const byId = {
+        a: { id: 'a' },
+        aa: { id: 'aa' }
+      }
+      mutations.FETCH_CATS_SUCCESS(state, { ids, byId })
+      expect(state.ids).toBe(ids)
+      expect(state.byId).toBe(byId)
+    })
+    
+    it('should handle ADD_VOTE', () => {
+      state.byId = {
+        a: { id: 'a', score: 0 },
+        aa: { id: 'aa', score: 0 }
+      }
+      mutations.ADD_VOTE(state, { id: 'aa' })
+      expect(state.byId['aa'].score).toBe(1)
     })
   })
 
@@ -38,7 +57,7 @@ describe('cats.js', () => {
       it('should commit FETCH_CATS_REQUEST then FETCH_CATS_FAILURE if the request failed', () => {
         global.fetch = () => new Promise((resolve, reject) => reject({ ok: false }))
         let types = []
-        const commit = (type, error) => {
+        const commit = ({ type, error }) => {
           if (error) {
             types.push({
               type,
@@ -60,14 +79,15 @@ describe('cats.js', () => {
       it('should commit FETCH_CATS_REQUEST then FETCH_CATS_SUCCESS if the request succeeded', () => {
         global.fetch = () => new Promise((resolve) => resolve({
           ok: true,
-          json: () => ({ images: [ {}, {} ] })
+          json: () => ({ images: [ { id: 'a' }, { id: 'aa' } ] })
         }))
         let types = []
-        const commit = (type, cats) => {
-          if (cats) {
+        const commit = ({ type, ids, byId }) => {
+          if (ids) {
             types.push({
               type,
-              cats
+              ids,
+              byId
             })
           } else {
             types.push({ type })
@@ -77,7 +97,14 @@ describe('cats.js', () => {
         actions.fetchCats({ commit }).then(() => {
           expect(types).toEqual([
             { type: FETCH_CATS_REQUEST },
-            { type: FETCH_CATS_SUCCESS, cats: [ {}, {} ] }
+            {
+              type: FETCH_CATS_SUCCESS,
+              ids: [ 'a', 'aa' ],
+              byId: {
+                a : { id: 'a', score: 0 },
+                aa : { id: 'aa', score: 0 }
+              }
+            }
           ])
         })
       })
