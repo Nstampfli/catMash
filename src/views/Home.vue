@@ -48,13 +48,6 @@ export default {
     },
     rightId () {
       const index = Math.floor(this.rightFloat * this.ids.length)
-      if (this.ids[index] === this.leftId) {
-        const shiftIndex = Math.floor(Math.random() * this.ids.length)
-        return index < shiftIndex
-          ? shiftIndex - index
-          : index - shiftIndex
-      }
-
       return this.ids[index]
     }
   },
@@ -73,9 +66,17 @@ export default {
   components: {
     'catmash-homecat': HomeCat
   },
-  created () {
+  async created () {
     if (!this.ids.length) {
-      this.fetchCats()
+      await this.fetchCats()
+    }
+    if (this.rightId === this.leftId) {
+      this.rightFloat = Math.random()
+    }
+  },
+  beforeUpdate () {
+    if (this.rightId === this.leftId) {
+      this.rightFloat = Math.random()
     }
   }
 }

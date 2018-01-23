@@ -47,9 +47,9 @@ export default {
   components: {
     'catmash-topcat': TopCat
   },
-  created () {
+  async created () {
     if (!this.ids.length) {
-      this.fetchCats()
+      await this.fetchCats()
     }
   }
 }
