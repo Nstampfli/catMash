@@ -6,6 +6,7 @@ const catEntity = new schema.Entity(
   {
     processStrategy: (entity) => ({
       ...entity,
+      url: entity.url.replace('http://', 'https://'),
       voteCount: 0,
       mashupCount: 0
     })
