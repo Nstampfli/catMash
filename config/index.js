@@ -12,11 +12,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/data': {
-        target: 'https://latelier.co/data',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/data': ''
-        }
+        target: 'https://latelier.co',
+        changeOrigin: true
       }
     },
 
