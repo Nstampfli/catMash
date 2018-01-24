@@ -47,9 +47,9 @@ export const mutations = {
 export const actions = {
   async fetchCats ({ commit, state }) {
     commit({ type: FETCH_CATS_REQUEST })
-    const { LATELIER_API_CATS_ENDPOINT } = process.env
+    const { LATELIER_API_BASE_URL, LATELIER_API_CATS_ENDPOINT } = process.env
     try {
-      const response = await fetch(LATELIER_API_CATS_ENDPOINT)
+      const response = await fetch(`${LATELIER_API_BASE_URL}${LATELIER_API_CATS_ENDPOINT}`)
       const json = await handleResponse(response)
       const normalized = normalize(json.images, [ catEntity ])
       commit({
