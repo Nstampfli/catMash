@@ -62,7 +62,9 @@ describe('cats.js', () => {
     describe('fetchCats()', () => {
       
       it('should commit FETCH_CATS_REQUEST then FETCH_CATS_FAILURE if the request failed', () => {
-        global.fetch = () => new Promise((resolve, reject) => reject({ ok: false }))
+        jest.mock('@/assets/data/cats.json', () => {
+          throw new Error('dummy error')
+        }, { virtual: true })
         let types = []
         const commit = ({ type, error }) => {
           if (error) {
@@ -78,16 +80,18 @@ describe('cats.js', () => {
         actions.fetchCats({ commit }).then(() => {
           expect(types).toEqual([
             { type: FETCH_CATS_REQUEST },
-            { type: FETCH_CATS_FAILURE, error: { ok: false } }
+            { type: FETCH_CATS_FAILURE, error: new Error('dummy error') }
           ])
         })
       })
 
       it('should commit FETCH_CATS_REQUEST then FETCH_CATS_SUCCESS if the request succeeded', () => {
-        global.fetch = () => new Promise((resolve) => resolve({
-          ok: true,
-          json: () => ({ images: [ { id: 'a' }, { id: 'aa' } ] })
-        }))
+        jest.mock('@/assets/data/cats.json', () => ({
+          images: [
+            { id: 'a' },
+            { id: 'aa' }
+          ]
+        }), { virtual: true })
         let types = []
         const commit = ({ type, ids, byId }) => {
           if (ids) {
