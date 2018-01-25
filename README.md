@@ -19,7 +19,7 @@ To start the dev server:
 yarn start
 ```
 
-Then open [http://localhost:3000/](http://localhost:3000/) to check out the app.
+Then open [http://localhost:3000/catmash/](http://localhost:3000/catmash/) to check out the app.
 
 ## Technologies
 
