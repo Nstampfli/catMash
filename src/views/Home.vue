@@ -70,12 +70,14 @@ export default {
     if (!this.ids.length) {
       await this.fetchCats()
     }
-    if (this.rightId === this.leftId) {
+    if (this.leftId === this.rightId) {
+      this.leftFloat = Math.random()
       this.rightFloat = Math.random()
     }
   },
   beforeUpdate () {
-    if (this.rightId === this.leftId) {
+    while (this.leftId === this.rightId) {
+      this.leftFloat = Math.random()
       this.rightFloat = Math.random()
     }
   }
